@@ -1,4 +1,4 @@
-import React  from 'react'
+import React  from 'react';
 import loadingGif from './loadinggif.gif';
 const Spinner = () => {
   
@@ -6,8 +6,8 @@ const Spinner = () => {
       <div className='text-center'>
         < img src= {loadingGif} alt='loadinggif.gif' />
       </div>
-    )
+    );
   
-}
+};
 
-export default Spinner
+export default Spinner;

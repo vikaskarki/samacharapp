@@ -9,7 +9,7 @@ import {
   Routes,
   Route,
   HashRouter,
-} from "react-router-dom";
+} from 'react-router-dom';
 
 const App = () => {
  const pageSize= 8;
@@ -39,7 +39,7 @@ const App = () => {
         </HashRouter>
         
       </div>
-    )
+    );
   
-}
+};
 export default App;
