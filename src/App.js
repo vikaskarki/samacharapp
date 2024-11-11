@@ -11,13 +11,6 @@ import {
   HashRouter,
 } from "react-router-dom";
 
-<BrowserRouter
-  future={{
-    v7_relativeSplatPath: true,
-  }}
-/>
-
-
 const App = () => {
  const pageSize= 8;
 

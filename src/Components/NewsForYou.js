@@ -1,4 +1,4 @@
-import React, { useEffect, useState  } from 'react'
+import React, { useEffect, useState, useCallback  } from 'react'
 import NewsItem from './NewsItem'
 import Spinner from './Spinner';
 import PropTypes from 'prop-types'
@@ -6,31 +6,31 @@ import InfiniteScroll from "react-infinite-scroll-component";
 
 const News = (props)=> {
    const [articles, setArticles] = useState([])
-   const [loading, setloading] = useState(true)
+//    const [loading, setloading] = useState(true)
    const [page, setpage] = useState(1)
    const [totalResults, settotalResults] = useState(0)
    document.title = `NewsForYou - ${props.category}`; // mathi tab ma aaune name change gareko ho!
    
     
-    const updateNews = async () => {
-        props.setProgress(10);
+    const updateNews = useCallback(async () => {
+        // props.setProgress(10);
         const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=67b64a15505c4f389d8968282e53e989&page=${page}&pageSize=${props.pageSize}`;
-        setloading(true)
+        // setloading(true)
         let data = await fetch(url);
-        props.setProgress(30);
+        // props.setProgress(30);
         let parsedData = await data.json();
-        props.setProgress(70);
+        // props.setProgress(70);
         console.log(parsedData);
         setArticles(parsedData.articles)
         settotalResults(parsedData.totalResults)
-        setloading(false)
-        props.setProgress(100);
-    }
+        // setloading(false)
+        // props.setProgress(100);
+    }, [props.country, props.category, props.pageSize]);
 
 
     useEffect( () => {
         updateNews ();
-    }, [] )
+    }, [updateNews] )
 
     // const handlePrevClick = async () => {
     //     setpage(page - 1);
@@ -45,7 +45,7 @@ const News = (props)=> {
     const fetchMoreData = async() => {
         const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=67b64a15505c4f389d8968282e53e989&page=${page+1}&pageSize=${props.pageSize}`;
         setpage(page + 1)
-        setloading(true);
+        // setloading(true);
         let data = await fetch(url);
         let parsedData = await data.json();
         console.log(parsedData);
