@@ -5,10 +5,10 @@ import NewsForYou from './Components/NewsForYou';
 import LoadingBar from 'react-top-loading-bar';
 
 import {
-  // BrowserRouter as Router,
+  BrowserRouter as Router,
   Routes,
   Route,
-  HashRouter,
+  // HashRouter,
 } from 'react-router-dom';
 
 const App = () => {
@@ -18,7 +18,7 @@ const App = () => {
    
     return (
       <div>
-        <HashRouter >
+        <BrowserRouter >
         
         <Navbar/>
         <LoadingBar
@@ -36,7 +36,7 @@ const App = () => {
           <Route exact path="/sports" element={<NewsForYou setProgress= {setProgress} key="Sports" pageSize={pageSize} country="us" category= "Sports" />}/>
           <Route exact path="/technology" element={<NewsForYou setProgress= {setProgress} key="Technology" pageSize={pageSize} country="us" category= "Technology"/>}/>
         </Routes>
-        </HashRouter>
+        </BrowserRouter>
         
       </div>
     );
