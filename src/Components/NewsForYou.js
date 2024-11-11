@@ -68,7 +68,7 @@ const News = (props)=> {
                                 <NewsItem title={element.title ? element.title.slice(0, 77) : ''} description={element.description ? element.description.slice(0, 77) : ''} imageurl={element.urlToImage}
                                     newsurl={element.url} author={element.author} date={element.publishedAt} />
                                 {/* mathi ko .slice(0, 77) le 0 dekhi 77 oota characters samma ko title ra description dekhauxa. */}
-                            </div>
+                            </div>;
                         })};
                     </div>
                     </div>
