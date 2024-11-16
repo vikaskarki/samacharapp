@@ -4,55 +4,82 @@ import Spinner from './Spinner';
 import PropTypes from 'prop-types';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
-const News = (props)=> {
+const News = ({ country = 'us', pageSize = 8, category = 'general' }) => {
    const [articles, setArticles] = useState([]);
-//    const [loading, setloading] = useState(true)
    const [page, setpage] = useState(1);
    const [totalResults, settotalResults] = useState(0);
-   document.title = `NewsForYou - ${props.category}`; // mathi tab ma aaune name change gareko ho!
+   const [error, setError] = useState(null); // Error state
+
+   document.title = `NewsForYou - ${category}`; // mathi tab ma aaune name change gareko ho!
    
     
     const updateNews = useCallback(async () => {
-        // props.setProgress(10);
-        const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=67b64a15505c4f389d8968282e53e989&page=${page}&pageSize=${props.pageSize}`;
-        // setloading(true)
-        let data = await fetch(url);
-        // props.setProgress(30);
+        const url = `/api/v2/top-headlines?country=${country}&category=${category}&apiKey=67b64a15505c4f389d8968282e53e989&page=${page}&pageSize=${pageSize}`;
+        try {
+            // Fetch data from API
+        let data = await fetch(url,{
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json', // Ensures the response is in JSON format
+                'Content-Type': 'application/json' // Sets content-type to application/json
+            }
+        });
+        
+        // Handle if response is not ok (non-2xx status codes)
+        if (!data.ok) {
+            throw new Error(`Failed to fetch data, Status: ${data.status}`);
+        }
+
         let parsedData = await data.json();
-        // props.setProgress(70);
+        // Ensure parsedData.articles exists before setting state
+        if (parsedData && parsedData.articles) {
         setArticles(parsedData.articles);
-        settotalResults(parsedData.totalResults);
-        // setloading(false)
-        // props.setProgress(100);
-    }, [props.country, props.category, props.pageSize]);
+        settotalResults(parsedData.totalResults);    
+        }else{
+            setError('No articles available.');
+        }
+    } catch (err) {
+        console.error('Error fetching news:', err);
+        setError('Error fetching news articles. Please try again later.');
+    }
+}, [country, category, pageSize]);
 
 
     useEffect( () => {
         updateNews ();
     }, [updateNews] );
 
-    // const handlePrevClick = async () => {
-    //     setpage(page - 1);
-    //     updateNews();
-    // }
 
-    // const handleNextClick = async () => {
-    //     setpage(page + 1 );
-    //     updateNews();
-    // }
-
+  // Function for loading more data  
     const fetchMoreData = async() => {
-        const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=67b64a15505c4f389d8968282e53e989&page=${page+1}&pageSize=${props.pageSize}`;
+        const url = `/api/v2/top-headlines?country=${country}&category=${category}&apiKey=67b64a15505c4f389d8968282e53e989&page=${page+1}&pageSize=${pageSize}`;
         setpage(page + 1);
-        // setloading(true);
+        
+        try {
         let data = await fetch(url);
         let parsedData = await data.json();
+
+        if (parsedData && parsedData.articles) {
         setArticles(articles.concat(parsedData.articles));
         settotalResults(parsedData.totalResults);
-    };
+    } else {
+        setError('No additional articles available.');
+    }
+    } catch (err) {
+        console.error('Error fetching more news:', err);
+        setError('Error loading more articles.');
+    }
+};
+
+
+
         return (
             <>
                 <h1 className='text-center' style={{ margin: '35px', marginTop: '90px' }}><strong>NewsForYou - Top Headlines</strong></h1>
+                
+                 {/* Display error if there is one */}
+            {error && <div style={{ color: 'red', textAlign: 'center' }}>{error}</div>}
+                 
                 <InfiniteScroll
                     dataLength={articles.length}
                     next={fetchMoreData}
@@ -79,15 +106,6 @@ const News = (props)=> {
         );
    
 };
-
-
-News.propTypes = {
-    // eslint-disable-next-line  
-        country: 'us',
-        pageSize: 8,
-        category: 'general',
-
-    };
 
     News.propTypes = {
         // eslint-disable-next-line
